@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.DS_Store
+backend/.venv/
+backend/__pycache__/
+backend/**/*.pyc
+backend/thoughtflow.db
+ios/App/Pods/
+ios/App/App/public/
+.vercel

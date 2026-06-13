@@ -1,0 +1,19 @@
+{
+  "name": "ThoughtFlow",
+  "short_name": "ThoughtFlow",
+  "description": "Turn scattered thoughts into clear priorities and actions.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f7f3",
+  "theme_color": "#f7f7f3",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

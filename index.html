@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ThoughtFlow turns unstructured thoughts into clear priorities and actions.">
+  <meta name="theme-color" content="#f7f7f3">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>ThoughtFlow</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/icons/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <button class="brand-menu-toggle" id="sidebar-menu-toggle" aria-label="Toggle menu">
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M3 5h14M3 10h14M3 15h14"></path>
+          </svg>
+        </button>
+        <span>ThoughtFlow</span>
+        <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15"></path></svg>
+        </button>
+      </div>
+
+      <button class="capture-button" id="open-capture">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"></path></svg>
+        Capture thought
+      </button>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="home">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4h5v5H4zM11 4h5v5h-5zM4 11h5v5H4zM11 11h5v5h-5z"></path></svg>
+          Home
+        </button>
+        <button class="nav-item" data-view="thoughts">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3.5h10v13H5zM7.5 7h5M7.5 10h5M7.5 13h3"></path></svg>
+          All thoughts
+          <span class="nav-count" id="thought-count">0</span>
+        </button>
+        <button class="nav-item" data-view="actions">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.5"></circle><path d="m7 10 2 2 4-4"></path></svg>
+          Actions
+          <span class="nav-count" id="action-count">0</span>
+        </button>
+        <button class="nav-item" data-view="tree">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 4v12M5 7h5M10 7v4M10 11h5M10 11v4M10 15h5"></path></svg>
+          Thought Tree
+        </button>
+        <button class="nav-item" data-view="insights">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 15V9M8 15V5M12 15v-3M16 15V7"></path></svg>
+          Insights
+        </button>
+        <button class="nav-item" data-view="signals">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h3l2-5 4 10 2-5h3"></path></svg>
+          Signals
+        </button>
+        <button class="nav-item" data-view="relationships">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="5" cy="6" r="2"></circle><circle cx="15" cy="5" r="2"></circle><circle cx="11" cy="15" r="2"></circle><path d="m7 6 6-1M6 8l4 5M14 7l-2 6"></path></svg>
+          Relationships
+        </button>
+      </nav>
+
+      <div class="sidebar-section">
+        <div class="sidebar-heading">
+          <span>Categories</span>
+          <div class="sidebar-heading-actions">
+            <button class="icon-button" id="manage-categories" title="Manage categories" aria-label="Manage categories">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h8M4 10h12M4 14h6M14 4v4M12 6h4"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div class="category-nav" id="category-nav"></div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="clarity-card">
+          <span class="clarity-label">Clarity practice</span>
+          <strong>Capture first.<br>Organize second.</strong>
+          <p>Let the system hold the details while you decide what matters.</p>
+        </div>
+        <button class="settings-button" id="reset-demo">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M6 10h8M8 14h4"></path></svg>
+          Reset workspace
+        </button>
+      </div>
+    </aside>
+    <button class="sidebar-backdrop" id="sidebar-backdrop" aria-label="Close sidebar"></button>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" aria-label="Toggle menu">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14"></path></svg>
+        </button>
+        <div class="topbar-title">
+          <span id="current-date"></span>
+        </div>
+        <div class="topbar-actions">
+          <span class="connection-status offline" id="connection-status" title="Working offline">
+            <span></span>
+            <b>Offline</b>
+          </span>
+          <button class="search-button" id="search-button">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5"></circle><path d="m12.5 12.5 4 4"></path></svg>
+            <span>Search thoughts</span>
+            <kbd>⌘ K</kbd>
+          </button>
+          <button class="avatar" id="profile-button" aria-label="Edit personal profile">DB</button>
+        </div>
+      </header>
+
+      <div class="page" id="dashboard-view">
+        <section class="welcome">
+          <p class="eyebrow">Your daily overview</p>
+          <button class="profile-overview" id="profile-overview" aria-label="Edit personal profile">
+            <span class="overview-avatar" id="overview-avatar">DB</span>
+            <span>
+              <small>Your recent rhythm</small>
+              <strong id="recent-tagline">Recently, you have been making thoughtful space for growth.</strong>
+            </span>
+          </button>
+          <h1>What deserves your<br><em>attention today?</em></h1>
+          <p class="welcome-copy">A quiet place to turn scattered thoughts into the next big thing.</p>
+        </section>
+
+        <section class="quick-capture" aria-label="Quick thought capture">
+          <button class="capture-icon" id="inline-open-capture" aria-label="Open thought capture options">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M10 4v12"></path></svg>
+          </button>
+          <input id="inline-thought" type="text" placeholder="Add a thought, task, or idea..." autocomplete="off">
+          <button id="inline-submit">Add thought</button>
+        </section>
+
+        <section class="daily-summary" id="daily-summary"></section>
+
+        <section class="section-block focus-section">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">Focus</p>
+              <h2>Top priorities</h2>
+            </div>
+            <button class="text-button" data-jump-view="actions">View all actions</button>
+          </div>
+          <div class="priority-list" id="priority-list"></div>
+        </section>
+
+        <div class="dashboard-grid">
+          <section class="section-block project-section">
+            <div class="section-header">
+              <div>
+                <p class="section-kicker">Momentum</p>
+                <h2>Active projects</h2>
+              </div>
+            </div>
+            <div class="project-list" id="project-list"></div>
+          </section>
+
+          <section class="section-block recent-section">
+            <div class="section-header">
+              <div>
+                <p class="section-kicker">Inbox</p>
+                <h2>Recent thoughts</h2>
+              </div>
+              <button class="text-button" data-jump-view="thoughts">See everything</button>
+            </div>
+            <div class="recent-list" id="recent-list"></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="page hidden" id="list-view">
+        <section class="list-page-header">
+          <p class="eyebrow" id="list-eyebrow">Library</p>
+          <h1 id="list-title">All thoughts</h1>
+          <p id="list-description">Everything you have captured, organized in one place.</p>
+        </section>
+
+        <div class="list-toolbar">
+          <div class="filter-pills" id="filter-pills">
+            <button class="filter-pill active" data-priority="all">All</button>
+            <button class="filter-pill" data-priority="high">High</button>
+            <button class="filter-pill" data-priority="medium">Medium</button>
+            <button class="filter-pill" data-priority="low">Low</button>
+            <button class="filter-pill" data-priority="open">Open</button>
+            <button class="filter-pill" data-priority="completed">Completed</button>
+          </div>
+          <span class="results-count" id="results-count"></span>
+        </div>
+
+        <div class="thought-table" id="thought-table"></div>
+      </div>
+
+      <div class="page v2-page hidden" id="tree-view">
+        <section class="view-intro">
+          <p class="eyebrow">Thought Tree</p>
+          <h1>What am I thinking about?</h1>
+          <p>Explore the living hierarchy connecting your life areas, projects, and individual thoughts.</p>
+        </section>
+        <section class="summary-archive">
+          <div class="summary-archive-header">
+            <div>
+              <p class="section-kicker">History</p>
+              <h2>Your thought summaries</h2>
+            </div>
+            <div class="summary-controls">
+              <div class="summary-tabs">
+                <button class="summary-tab active" data-summary-mode="daily">Daily</button>
+                <button class="summary-tab" data-summary-mode="weekly">Weekly</button>
+              </div>
+              <input id="summary-date" type="date" aria-label="Jump to summary date">
+            </div>
+          </div>
+          <div class="summary-timeline" id="summary-timeline"></div>
+        </section>
+        <div class="thought-tree" id="thought-tree"></div>
+      </div>
+
+      <div class="page v2-page hidden" id="insights-view">
+        <section class="view-intro">
+          <p class="eyebrow">Insights</p>
+          <h1>How has my thinking changed?</h1>
+          <p>A measured view of where your attention is going and what is gaining momentum.</p>
+        </section>
+        <div id="insights-content"></div>
+      </div>
+
+      <div class="page v2-page hidden" id="signals-view">
+        <section class="view-intro">
+          <p class="eyebrow">Signals</p>
+          <h1>What patterns might I be missing?</h1>
+          <p>Evidence-based observations across your thoughts. Signals describe patterns; they do not prescribe decisions.</p>
+        </section>
+        <div class="signal-list" id="signal-list"></div>
+      </div>
+
+      <div class="page v2-page hidden" id="relationships-view">
+        <section class="view-intro">
+          <p class="eyebrow">Relationship map</p>
+          <h1>Where do my ideas connect?</h1>
+          <p>Select a node to inspect the thoughts linking projects and areas of life.</p>
+        </section>
+        <div class="relationship-shell">
+          <div class="relationship-map" id="relationship-map"></div>
+          <aside class="relationship-detail" id="relationship-detail"></aside>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="capture-modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="capture-title">
+      <div class="modal-header">
+        <div>
+          <span class="eyebrow">Capture</span>
+          <h2 id="capture-title">Clear your mind</h2>
+        </div>
+        <button class="icon-button modal-close" id="close-capture" aria-label="Close capture dialog">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15"></path></svg>
+        </button>
+      </div>
+
+      <div class="capture-tabs" role="tablist">
+        <button class="capture-tab active" data-mode="quick" role="tab">Quick thought</button>
+        <button class="capture-tab" data-mode="dump" role="tab">Brain dump</button>
+      </div>
+
+      <div id="capture-entry">
+        <textarea id="capture-input" rows="4" placeholder="What is on your mind?"></textarea>
+        <p class="capture-hint" id="capture-hint">One thought, task, concern, or idea. Press ⌘ Enter to organize it.</p>
+      </div>
+
+      <div class="dump-choice hidden" id="dump-choice">
+        <p class="review-intro">How should this brain dump live in ThoughtFlow?</p>
+        <div class="choice-grid">
+          <button class="choice-card" id="keep-reflection">
+            <span class="choice-icon">R</span>
+            <strong>Keep as one reflection</strong>
+            <small>Preserve the complete train of thought as one larger entry.</small>
+          </button>
+          <button class="choice-card" id="review-split">
+            <span class="choice-icon">S</span>
+            <strong>Auto-split into thoughts</strong>
+            <small>Review and adjust the suggested boundaries before saving.</small>
+          </button>
+        </div>
+      </div>
+
+      <div class="dump-review hidden" id="dump-review">
+        <div class="review-heading">
+          <div>
+            <p class="section-kicker">Review the split</p>
+            <h3>Does this match how you meant it?</h3>
+          </div>
+          <button class="text-button" id="back-to-choice">Back</button>
+        </div>
+        <p class="review-intro">Edit the text, merge sections, remove one, or add a new thought. Nothing is saved until you confirm.</p>
+        <div class="split-list" id="split-list"></div>
+        <button class="add-split-button" id="add-split">+ Add another thought</button>
+      </div>
+
+      <div class="modal-footer">
+        <span class="ai-note">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 2 1.2 4.3L15.5 7.5l-4.3 1.2L10 13l-1.2-4.3-4.3-1.2 4.3-1.2zM15.5 12l.7 2.3 2.3.7-2.3.7-.7 2.3-.7-2.3-2.3-.7 2.3-.7z"></path></svg>
+          ThoughtFlow will organize this for you
+        </span>
+        <button class="primary-button" id="organize-button">
+          <span id="organize-label">Organize thought</span>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 6 6-6 6"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="edit-modal">
+    <div class="modal compact" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+      <div class="modal-header">
+        <div>
+          <span class="eyebrow">Refine</span>
+          <h2 id="edit-title">Edit thought</h2>
+        </div>
+        <button class="icon-button modal-close" id="close-edit" aria-label="Close edit dialog">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15"></path></svg>
+        </button>
+      </div>
+      <input type="hidden" id="edit-id">
+      <label class="field-label" for="edit-content">Thought</label>
+      <textarea id="edit-content" rows="4"></textarea>
+      <div class="form-grid">
+        <label>
+          <span class="field-label">Category</span>
+          <select id="edit-category"></select>
+        </label>
+        <label>
+          <span class="field-label">Priority</span>
+          <select id="edit-priority">
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </label>
+      </div>
+      <div class="modal-footer edit-footer">
+        <button class="danger-button" id="delete-thought">Delete</button>
+        <div class="edit-actions">
+          <button class="secondary-button" id="share-thought">Share</button>
+          <button class="secondary-button" id="remind-thought">Remind me</button>
+          <button class="primary-button" id="save-edit">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="category-modal">
+    <div class="modal compact" role="dialog" aria-modal="true" aria-labelledby="category-title">
+      <div class="modal-header">
+        <div>
+          <span class="eyebrow">Personalize</span>
+          <h2 id="category-title">Edit categories</h2>
+        </div>
+        <button class="icon-button modal-close" id="close-categories" aria-label="Close category editor">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15"></path></svg>
+        </button>
+      </div>
+      <p class="category-help">Keep at least one category. Names can contain up to 25 characters.</p>
+      <div class="category-editor-list" id="category-editor-list"></div>
+      <button class="add-split-button" id="add-category">+ Add category</button>
+      <p class="form-error hidden" id="category-error"></p>
+      <div class="modal-footer">
+        <span class="category-limit">Unlimited categories · 25 characters each</span>
+        <button class="primary-button" id="save-categories">Save categories</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="profile-modal">
+    <div class="modal compact" role="dialog" aria-modal="true" aria-labelledby="profile-title">
+      <div class="modal-header">
+        <div>
+          <span class="eyebrow">Personalize</span>
+          <h2 id="profile-title">Make it yours</h2>
+        </div>
+        <button class="icon-button modal-close" id="close-profile" aria-label="Close profile editor">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15"></path></svg>
+        </button>
+      </div>
+      <label class="field-label" for="profile-name">Your name</label>
+      <input class="profile-name-input" id="profile-name" maxlength="30" placeholder="What should ThoughtFlow call you?">
+      <span class="field-label">Avatar</span>
+      <div class="avatar-options" id="avatar-options">
+        <button data-avatar="initials">Aa</button>
+        <button data-avatar="✦">✦</button>
+        <button data-avatar="☀">☀</button>
+        <button data-avatar="◌">◌</button>
+        <button data-avatar="☺">☺</button>
+        <button data-avatar="~">~</button>
+      </div>
+      <span class="field-label">Color</span>
+      <div class="color-options" id="color-options">
+        <button data-profile-color="#7D9273" aria-label="Sage"></button>
+        <button data-profile-color="#B4836D" aria-label="Clay"></button>
+        <button data-profile-color="#A8956F" aria-label="Ochre"></button>
+        <button data-profile-color="#7E8FA3" aria-label="Dusty blue"></button>
+        <button data-profile-color="#927F95" aria-label="Mauve"></button>
+      </div>
+      <div class="modal-footer">
+        <span class="category-limit">This profile stays on your device.</span>
+        <button class="primary-button" id="save-profile">Save profile</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-overlay hidden" id="search-overlay">
+    <div class="search-panel">
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5"></circle><path d="m12.5 12.5 4 4"></path></svg>
+        <input id="global-search" type="search" placeholder="Search by date, category, time, or idea..." autocomplete="off">
+      </div>
+      <div class="search-guides">
+        <button data-search-guide="today">Today</button>
+        <button data-search-guide="this week">This week</button>
+        <button data-search-guide="high priority">High priority</button>
+        <button data-search-guide="Career">Career</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
