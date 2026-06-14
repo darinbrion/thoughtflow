@@ -9,6 +9,7 @@ const isNative = Capacitor.isNativePlatform();
 
 async function initialize(onCaptureUrl) {
   if (!isNative) return;
+  await StatusBar.setOverlaysWebView({ overlay: false });
   await StatusBar.setStyle({ style: Style.Light });
   App.addListener('appUrlOpen', ({ url }) => {
     const parsed = new URL(url);
