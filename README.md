@@ -54,6 +54,8 @@ Open `http://localhost:5173`.
 
 ## Build the iPhone app
 
+DISCLAIMER: iPhone app will not be published because of the $99/year Apple Developer Fee. However, this tool was built with that as the final intent. 
+
 Install the full Xcode application from the Mac App Store first. Then:
 
 ```bash
